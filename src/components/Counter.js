@@ -1,4 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
+import { counterActions } from "../store/counter";
 
 import classes from "./Counter.module.css";
 
@@ -13,24 +14,39 @@ const Counter = () => {
   // useSelector in get's subscribed to the central-store
 
   // also if this component unmounts react-redux makes sure to unsubscribe from store
-  const counter = useSelector((state) => state.counter);
-  const toggleCounterHandler = () => {};
+  const counter = useSelector((state) => state.counter.counter);
+  const showCounter = useSelector((state) => state.counter.showCounter);
+
+  const toggleCounterHandler = () => {
+    dispatch(counterActions.toggleCounter());
+  };
 
   const incrementHandler = () => {
-    dispatch({ type: "increment" });
+    dispatch(counterActions.increment());
+  };
+
+  const increaseHandler = () => {
+    dispatch(counterActions.increase(5)); // {type: SOME_UNIQUE_STRING, payload: 5}
   };
 
   const decrementHandler = () => {
-    dispatch({ type: "decrement" });
+    dispatch(counterActions.decrement());
   };
 
   return (
     <main className={classes.counter}>
       <h1>Redux Counter</h1>
-      <div className={classes.value}>{counter}</div>
+      {showCounter && <div className={classes.value}>{counter}</div>}
       <div>
-        <button onClick={incrementHandler}>Increment</button>
-        <button onClick={decrementHandler}>Decrement</button>
+        <button disabled={!showCounter} onClick={incrementHandler}>
+          Increment
+        </button>
+        <button disabled={!showCounter} onClick={increaseHandler}>
+          Increase by 5
+        </button>
+        <button disabled={!showCounter} onClick={decrementHandler}>
+          Decrement
+        </button>
       </div>
       <button onClick={toggleCounterHandler}>Toggle Counter</button>
     </main>
